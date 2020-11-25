@@ -1,0 +1,17 @@
+# Spark Files
+derby.log
+metastore_db/*
+pyspark.sh
+
+# Report
+docs/*.aux
+docs/*.log
+docs/*.synctex.gz
+docs/*.toc
+docs/*.out
+
+# Mac files
+.DS_Store
+
+# Hadoop outputs
+out.csv
