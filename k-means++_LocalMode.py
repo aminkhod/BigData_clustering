@@ -299,7 +299,7 @@ k=4
 
 
 start = timer()
-for i in range(1,k-1,1):
+for i in range(1,k-1):
     
     next_selected, data_cent_5_persist = initial_centroids(next_selected,data_cent_5_persist, i)
 
@@ -436,7 +436,7 @@ new_centroid_persist = new_centroid.persist(StorageLevel.MEMORY_AND_DISK)
 
 # In[41]:
 
-
+final_data
 
 start = timer()
 
