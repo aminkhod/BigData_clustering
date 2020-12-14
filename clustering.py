@@ -153,7 +153,7 @@ IR = 0.2
 i = 10
 k = 3 #k: Number of clusters
 # count = Cs()
-chunk = 250
+chunk = 400
 
 
 # In[22]:
