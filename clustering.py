@@ -390,19 +390,18 @@ print ("Execution time HH:MM:SS:",timedelta(seconds=end-start))
 
 # check_centroid = udf(lambda x,y,z,r: MyCheckUpdate(x,y,z,r), FloatType())
 
-# def squaree1(c,u,f,g):
-#     c = float(c)
-#     u = float(u)
-#     f = float(f)
-#     g = float(g)
-#     array1 = np.array([c,u])
-#     array2 = np.array([f,g])
-#     dist = np.linalg.norm(array1-array2)
-#     dist = dist.item()
-#     return dist
-
-# squaree_spark1 = udf(lambda x,y,z,r: squaree1(x,y,z,r), FloatType())
-# sqlContext.sql("SET spark.sql.autoBroadcastJoinThreshold = -1")
+def squaree1(c,u,f,g):
+    c = float(c)
+    u = float(u)
+    f = float(f)
+    g = float(g)
+    array1 = np.array([c,u])
+    array2 = np.array([f,g])
+    dist = np.linalg.norm(array1-array2)
+    dist = dist.item()
+    return dist
+squaree_spark1 = udf(lambda x,y,z,r: squaree1(x,y,z,r), FloatType())
+sqlContext.sql("SET spark.sql.autoBroadcastJoinThreshold = -1")
 
 
 # In[ ]:
