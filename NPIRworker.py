@@ -28,8 +28,25 @@ from datetime import timedelta
 import findspark
 findspark.init()
 
-from pyspark import SparkFiles
+from operator import *
+
+
+from pyspark import SparkContext
+# from pyspark import StorageLevel
+from pyspark.sql.types import *
+from pyspark.sql.functions import udf, log, rand, col, broadcast, row_number, avg, mean, least, struct,                lit, sequence, sum, monotonically_increasing_id, pandas_udf, PandasUDFType
+import pyspark.sql.functions as F
+
+from functools import reduce
+from pyspark.sql import SparkSession, SQLContext, Window, Row, DataFrame
+from pyspark import SparkConf
+from scipy.spatial import distance
+from pyspark.sql.window import Window
+
 spark = SparkSession.builder.master("local[*]").config("spark.storage.blockManagerSlaveTimeoutMs","12000001ms").config("spark.driver.maxResultSize","24g").config("spark.default.parallelism", "200").config("spark.memory.offHeap.size", "24g").appName("NPIR_Parallel").config("spark.executor.memory", "24g").config("spark.driver.memory", "24g").getOrCreate()
+# spark.conf.set("spark.sql.execution.arrow.pyspark.enabled", "False")
+sc = spark.sparkContext
+sqlContext = SQLContext(sc)
 
 
 # In[6]:
