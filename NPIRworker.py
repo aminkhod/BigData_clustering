@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[4]:
 
 
 import numpy as np
@@ -29,36 +29,39 @@ import findspark
 findspark.init()
 
 from pyspark import SparkFiles
+spark = SparkSession.builder.master("local[*]").config("spark.storage.blockManagerSlaveTimeoutMs","12000001ms").config("spark.driver.maxResultSize","24g").config("spark.default.parallelism", "200").config("spark.memory.offHeap.size", "24g").appName("NPIR_Parallel").config("spark.executor.memory", "24g").config("spark.driver.memory", "24g").getOrCreate()
 
 
-# In[1]:
+# In[6]:
 
 
-def NPIRPreProcess():
-    self.points = points
+def NPIRPreProcess(points, chunk):
+    
     #IR: The indexing ratio to be used for generating the maximum index
-    self.IR = 0.2
+    IR = 0.2
     #The number of iteration i
-    self.i = 10
-    self.k = 3 #k: Number of clusters
+    i = 10
+    k = 3 #k: Number of clusters
     # count = Cs()
-    self.chunk = 200
-    leaderheadr = ['chunkLabel', 'old label']
-    # leaderheadr = []
-    leaderheadr.extend([str(x) for x in range(1, len(data_spark.columns))])
-    leaderheadr = tuple(leaderheadr)
+#     leaderheadr = ['chunkLabel', 'old label']
+#     # leaderheadr = []
+#     leaderheadr.extend([str(x) for x in range(1, len(data_spark.columns))])
+#     leaderheadr = tuple(leaderheadr)
 
     start = timer()
     # labels = sqlContext.createDataFrame([np.full(len(labelsheader), np.nan).tolist()],labelsheader)
     # labels = labels.na.drop()
 
-    leaders = sqlContext.createDataFrame([np.full(len(leaderheadr), np.nan).tolist()],leaderheadr)
-    leaders = leaders.na.drop()
+#     leaders = sqlContext.createDataFrame([np.full(len(leaderheadr), np.nan).tolist()],leaderheadr)
+#     leaders = leaders.na.drop()
 
-    ii = 0
+#     ii = 0
+    print(SparkFiles.get('blobs1.csv'))
+    data_spark_df = spark.read.format('csv').option('header','True').option('index','False').    load(SparkFiles.get(some_path))
     for z in range(0, points, chunk):
         j = z + chunk
-        data = data_spark.where(col("index_column_name").between(z, j-1)).toPandas()
+
+        data = data_spark_df.where(col("index_column_name").between(z, min(points, j-1))).toPandas()
         data.drop("index_column_name",axis=1,inplace=True)
         data = data.astype(float)
         from NPIR import NPIR
@@ -80,15 +83,16 @@ def NPIRPreProcess():
             leader.append([round(np.mean(z), 4) for z in data[data['labels']==i].values[:, :-1].T])
         del data
 
-        # Adding to pyspark leaders
-        for x in range(len(leader)):
-            x1 = [ii, x]
-            x1.extend(leader[x])
-            leader[x] = x1
-        leaderDF = sqlContext.createDataFrame(leader,leaderheadr)
-        leaders = unionAll(leaders, leaderDF)
-        ii += 1
-    del data_spark
+#         # Adding to pyspark leaders
+#         for x in range(len(leader)):
+#             x1 = [ii, x]
+#             x1.extend(leader[x])
+#             leader[x] = x1
+#         leaderDF = sqlContext.createDataFrame(leader,leaderheadr)
+#         leaders = unionAll(leaders, leaderDF)
+#         ii += 1
+#     del data_spark
+    return leader
     end = timer()
     print ("Execution time HH:MM:SS:", timedelta(seconds= end - start))
 
